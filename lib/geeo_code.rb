@@ -3,7 +3,22 @@ require 'open-uri'
 require 'cgi'
 
 require 'geeo_code/version'
-
+# GeeoCode is a super simple reverse geocoding wrapper for the Google geocoding apis.
+# 
+# Currently it only supports the JSON encoding, but this will probably change in the future
+# in case, for whatever reason, people would rather have it fetched via XML. It really shouln't
+# make any difference since all you get back is a hash of the values.
+#
+# There is only one method you really need to worry about is reverse. This simply takes an address
+# and returns the reverse geocoded data.
+#
+# Simple example:
+#
+#     coder = Geeocode.new
+#     coder.reverse("6 Woodward Ave, Hilton Head Island, SC")
+#
+# Will return the geocode info for the given address.
+#
 class GeeoCode
   GOOGLE_ENDPOINT = "http://maps.googleapis.com/maps/api/geocode/".freeze
 
@@ -11,14 +26,26 @@ class GeeoCode
 
   attr_accessor *VALID_OPTIONS
 
-  def initialize( options={} )
+  # Valid options are 
+  #     :proxy => true|false
+  #     :sensor => true|false
+  #     :format => "json"|"xml"
+  #
+  # The proxy lets you ignore any environmental `http_proxy` settings.
+  # The sensor alerts google to whether or not this is a gps enabled device.
+  # The format specifies whether or not we want the results to be parsed from JSON or XML.
+  #
+  def initialize( options={:proxy => false, :sensor => false, :format => 'json' } )
+
     options.map {|k,v| send("#{k}=".to_sym, v)}
   end
 
-  def configure
-    yield self    
-  end
-  
+  # Takes an address, returns a hash with the following:
+  #
+  #   :address => The address info
+  #   :geometry => Geometry info (lat/long, etc.)
+  #   :match_type => "Exact or partial match.
+  #
   def reverse(address)
     begin  
       url = URI.parse("#{GOOGLE_ENDPOINT}#{format}?address=#{CGI::escape(address)}&sensor=#{sensor}")
