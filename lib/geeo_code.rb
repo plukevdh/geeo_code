@@ -35,8 +35,9 @@ class GeeoCode
   # The sensor alerts google to whether or not this is a gps enabled device.
   # The format specifies whether or not we want the results to be parsed from JSON or XML.
   #
-  def initialize( options={:proxy => false, :sensor => false, :format => 'json' } )
-
+  def initialize( args={} )
+    options =  {:proxy => false, :sensor => false, :format => 'json' }
+    options.merge! args
     options.map {|k,v| send("#{k}=".to_sym, v)}
   end
 
