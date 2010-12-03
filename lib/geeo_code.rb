@@ -83,7 +83,7 @@ class GeeoCode
     end
   end
 
-  def print
+  def print(address)
     url = URI.parse("#{GOOGLE_ENDPOINT}#{format}?address=#{CGI::escape(address)}&sensor=#{sensor}")
     puts url
     return url
