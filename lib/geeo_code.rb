@@ -82,4 +82,10 @@ class GeeoCode
       puts msg 
     end
   end
+
+  def print
+    url = URI.parse("#{GOOGLE_ENDPOINT}#{format}?address=#{CGI::escape(address)}&sensor=#{sensor}")
+    puts url
+    return url
+  end
 end
